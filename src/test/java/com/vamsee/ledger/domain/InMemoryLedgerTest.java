@@ -19,6 +19,7 @@ class InMemoryLedgerTest {
         assertEquals(2_500, ledger.balance("Bob"));
         long total = ledger.allBalances().values().stream().mapToLong(v -> v).sum();
         assertEquals(0, total);                  // double entry: EVERYTHING sums to zero
+        assertTrue(ledger.isLedgerBalanced());
     }
 
     @Test

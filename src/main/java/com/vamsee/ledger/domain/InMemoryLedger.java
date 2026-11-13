@@ -38,7 +38,7 @@ public class InMemoryLedger {
 
     public TransferResult transfer(String fromId, String toId, long pence) {
         if (findAccount(fromId).isEmpty()) return new AccountNotFound(fromId);
-        if (findAccount(toId).isEmpty())   return new AccountNotFound(toId);
+        if (findAccount(toId).isEmpty()) return new AccountNotFound(toId);
         if (fromId.equals(toId)) return new SameAccount();
 
         long available = balance(fromId);
@@ -49,4 +49,12 @@ public class InMemoryLedger {
         entries.add(new Entry(txId, toId, +pence));
         return new Success(txId);
     }
+    public boolean isLedgerBalanced() {
+        long total = entries.stream()
+                .mapToLong(e -> e.pence())          // Entry → its pence
+                .reduce(0L, Math::addExact);        // fold them together, overflow-safe
+        return total == 0;
+    }
 }
+
+
